@@ -54,10 +54,12 @@ window.onload = function() {
         woof.addMarker('woof1', 0, 1.0);
 		
         // Add some text using a CSS style.
-        // Center it in X, and position its top 15 pixels from the top of the world.
         var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
         var text = game.add.text( 75, game.world.centerY, "Hello Dog", style );
+		var style = { font: "25px Verdana", fill: "#000000", align: "center" };
+		var text2 = game.add.text( 1250, game.world.centerY, "Goodbye Dog", style );
         text.anchor.setTo( 0.5, 0.0 );
+		
 		cursors = game.input.keyboard.createCursorKeys();
 		jump = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     }
