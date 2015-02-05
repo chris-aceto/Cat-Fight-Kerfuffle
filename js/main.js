@@ -20,6 +20,7 @@ window.onload = function() {
         game.load.image( 'logo', 'assets/Dogsmall.png' );
 		game.load.image( 'logo2', 'assets/Dogsmall2.png' );
 		game.load.image( 'bg', 'assets/BG.png' );
+		game.load.audio('woof', 'assets/woof.ogg');
     }
     
     var bouncy;
@@ -29,20 +30,28 @@ window.onload = function() {
 	var jump;
 	var height = false;
 	var jumping = false;
+	var woof;
     
     function create() {
 	game.add.tileSprite(0, 0, 1600, 1000, 'bg');
         // Create a sprite at the center of the screen using the 'logo' image.
         bouncy = game.add.sprite( game.world.centerX, game.world.centerY, 'logo' );
-        // Anchor the sprite at its center, as opposed to its top-left corner.
+		
         // so it will be truly centered.
 		bouncy.animations.add('Dogsmall2', true);
         bouncy.anchor.setTo( 20, -1 );
+		
         // Turn on the arcade physics engine for this sprite.
         game.physics.enable( bouncy, Phaser.Physics.ARCADE );
+		
         // Make it bounce off of the world bounds.
         bouncy.body.collideWorldBounds = true;
-        
+		
+		//adding in sound
+		woof = game.add.audio('woof');
+		woof.allowMultiple = true;
+        woof.addMarker('woof1', 0, 1.0);
+		
         // Add some text using a CSS style.
         // Center it in X, and position its top 15 pixels from the top of the world.
         var style = { font: "25px Verdana", fill: "#9999ff", align: "center" };
@@ -95,9 +104,11 @@ window.onload = function() {
 		{
 			bouncy.body.velocity.x=+25;
 		}
+		// starting a jump
 		if (jump.isDown && height == false && bouncy.body.velocity.y == 0){
 			bouncy.body.velocity.y = -500;
 			jumping = true;
+			woof.play('woof1');
 			}
     }
 };
