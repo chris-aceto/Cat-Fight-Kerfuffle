@@ -13,13 +13,13 @@ window.onload = function() {
     
     "use strict";
     
-    var game = new Phaser.Game( 1925, 400, Phaser.AUTO, 'game', { preload: preload, create: create, update: update } );
+    var game = new Phaser.Game( 1600, 400, Phaser.AUTO, 'game', { preload: preload, create: create, update: update } );
     
     function preload() {
         // Load an image and call it 'logo'.
         game.load.image( 'logo', 'assets/Dogsmall.png' );
 		game.load.image( 'logo2', 'assets/Dogsmall2.png' );
-		game.load.image( 'bg', 'assets/BG.png' );
+		game.load.image( 'bg', 'assets/BG2.png' );
 		game.load.audio('woof', 'assets/woof.ogg');
     }
     
@@ -33,7 +33,7 @@ window.onload = function() {
 	var woof;
     
     function create() {
-	game.add.tileSprite(0, 0, 2000, 400, 'bg');
+	game.add.tileSprite(0, 0, 1600, 400, 'bg');
         // Create a sprite at the center of the screen using the 'logo' image.
         bouncy = game.add.sprite( game.world.centerX, game.world.centerY, 'logo' );
 		bouncy.width = 200;
