@@ -55,8 +55,8 @@ window.onload = function() {
 		
         // Add some text using a CSS style.
         // Center it in X, and position its top 15 pixels from the top of the world.
-        var style = { font: "25px Verdana", fill: "#9999ff", align: "center" };
-        var text = game.add.text( game.world.centerX, 15, "Hello Dog", style );
+        var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
+        var text = game.add.text( 75, game.world.centerY, "Hello Dog", style );
         text.anchor.setTo( 0.5, 0.0 );
 		cursors = game.input.keyboard.createCursorKeys();
 		jump = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
