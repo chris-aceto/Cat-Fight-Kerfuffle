@@ -13,7 +13,7 @@ window.onload = function() {
     
     "use strict";
     
-    var game = new Phaser.Game( 1600, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update } );
+    var game = new Phaser.Game( 1500, 400, Phaser.AUTO, 'game', { preload: preload, create: create, update: update } );
     
     function preload() {
         // Load an image and call it 'logo'.
@@ -37,7 +37,7 @@ window.onload = function() {
         // Anchor the sprite at its center, as opposed to its top-left corner.
         // so it will be truly centered.
 		bouncy.animations.add('Dogsmall2', true);
-        bouncy.anchor.setTo( 0.5, 0.5 );
+        bouncy.anchor.setTo( 20, -1 );
         // Turn on the arcade physics engine for this sprite.
         game.physics.enable( bouncy, Phaser.Physics.ARCADE );
         // Make it bounce off of the world bounds.
