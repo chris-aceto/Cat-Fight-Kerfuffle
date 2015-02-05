@@ -36,11 +36,11 @@ window.onload = function() {
 	game.add.tileSprite(0, 0, 2000, 400, 'bg');
         // Create a sprite at the center of the screen using the 'logo' image.
         bouncy = game.add.sprite( game.world.centerX, game.world.centerY, 'logo' );
-		bouncy.width = 300;
+		bouncy.width = 200;
 		bouncy.height = 100;
         // so it will be truly centered.
 		bouncy.animations.add('Dogsmall2', true);
-        bouncy.anchor.setTo( 20, -1 );
+        bouncy.anchor.setTo( 20, -2 );
 		
         // Turn on the arcade physics engine for this sprite.
         game.physics.enable( bouncy, Phaser.Physics.ARCADE );
