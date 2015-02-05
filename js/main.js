@@ -13,7 +13,7 @@ window.onload = function() {
     
     "use strict";
     
-    var game = new Phaser.Game( 1500, 400, Phaser.AUTO, 'game', { preload: preload, create: create, update: update } );
+    var game = new Phaser.Game( 1925, 400, Phaser.AUTO, 'game', { preload: preload, create: create, update: update } );
     
     function preload() {
         // Load an image and call it 'logo'.
@@ -33,10 +33,11 @@ window.onload = function() {
 	var woof;
     
     function create() {
-	game.add.tileSprite(0, 0, 1600, 1000, 'bg');
+	game.add.tileSprite(0, 0, 2000, 400, 'bg');
         // Create a sprite at the center of the screen using the 'logo' image.
         bouncy = game.add.sprite( game.world.centerX, game.world.centerY, 'logo' );
-		
+		bouncy.width = 300;
+		bouncy.height = 100;
         // so it will be truly centered.
 		bouncy.animations.add('Dogsmall2', true);
         bouncy.anchor.setTo( 20, -1 );
