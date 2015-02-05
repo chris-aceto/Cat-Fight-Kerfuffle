@@ -19,12 +19,14 @@ window.onload = function() {
         // Load an image and call it 'logo'.
         game.load.image( 'logo', 'assets/Dogsmall.png' );
 		game.load.image( 'logo2', 'assets/Dogsmall2.png' );
+		game.load.image( 'logoL', 'assets/DogsmallLeft.png' );
+		game.load.image( 'logo2L', 'assets/Dogsmall2Left.png' );
 		game.load.image( 'bg', 'assets/BG2.png' );
 		game.load.audio('woof', 'assets/woof.ogg');
 		game.load.audio('meow', 'assets/meow.ogg');
     }
     
-    var bouncy;
+    var doggy;
 	var floor;
 	var map;
 	var cursors;
@@ -34,22 +36,24 @@ window.onload = function() {
 	var woof;
 	var meow;
 	var jumps = 0;
+	var loop = 1;
     
     function create() {
 	game.add.tileSprite(0, 0, 1600, 400, 'bg');
         // Create a sprite at the center of the screen using the 'logo' image.
-        bouncy = game.add.sprite( game.world.centerX, game.world.centerY, 'logo' );
-		bouncy.width = 200;
-		bouncy.height = 100;
+        doggy = game.add.sprite( game.world.centerX, game.world.centerY, 'logo' );
+		doggy.width = 200;
+		doggy.height = 100;
         // so it will be truly centered.
-		bouncy.animations.add('Dogsmall2', true);
-        bouncy.anchor.setTo( 20, -2 );
+		//doggy.animations.add('logo2', true);
+		
+        doggy.anchor.setTo( 20, -2 );
 		
         // Turn on the arcade physics engine for this sprite.
-        game.physics.enable( bouncy, Phaser.Physics.ARCADE );
+        game.physics.enable( doggy, Phaser.Physics.ARCADE );
 		
         // Make it bounce off of the world bounds.
-        bouncy.body.collideWorldBounds = true;
+        doggy.body.collideWorldBounds = true;
 		
 		//adding in sound
 		woof = game.add.audio('woof');
@@ -66,6 +70,11 @@ window.onload = function() {
 		var text2 = game.add.text( 1250, game.world.centerY, "Goodbye Dog", style );
         text.anchor.setTo( 0.5, 0.0 );
 		
+		//game.camera.bounds = null;
+		//game.camera.setSize(800, 400);
+		game.camera.follow(doggy);
+		
+		
 		cursors = game.input.keyboard.createCursorKeys();
 		jump = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     }
@@ -76,53 +85,69 @@ window.onload = function() {
         // in X or Y.
         // This function returns the rotation angle that makes it visually match its
         // new trajectory.
-        //bouncy.rotation = game.physics.arcade.accelerateToPointer( bouncy, this.game.input.activePointer, 250, 250, 250 );
+        //doggy.rotation = game.physics.arcade.accelerateToPointer( doggy, this.game.input.activePointer, 250, 250, 250 );
 		// checking if dog has reached max height, then letting him fall
-		if (bouncy.body.velocity.y == 500)
+		
+		
+		if (doggy.body.velocity.y == 500)
 			{
 				height = false;
-				bouncy.body.velocity.y = 0;
+				doggy.body.velocity.y = 0;
+				doggy.loadTexture('logo')
 			}
 		if (height){
-			bouncy.body.velocity.y += 25;
+			doggy.body.velocity.y += 25;
 			
 		}
 		// checking if dog is moving left or right, and if the player wants to accellerate
-		if (bouncy.body.velocity.x < 0 && cursors.left.isDown && bouncy.body.velocity.x > -1200){
-			bouncy.body.velocity.x *= 1.1;
+		if (doggy.body.velocity.x < 0 && cursors.left.isDown && doggy.body.velocity.x > -1200){
+			doggy.body.velocity.x *= 1.1;
+			if (doggy.body.velocity.y == 0){
+			doggy.loadTexture('logoL');
 			}
-		if (bouncy.body.velocity.x < 0 && !cursors.left.isDown){
-			bouncy.body.velocity.x *= 0.95;
+			}
+		if (doggy.body.velocity.x < 0 && !cursors.left.isDown){
+			doggy.body.velocity.x *= 0.95;
+			if (doggy.body.velocity.y == 0){
+			doggy.loadTexture('logoL');
+			}
 			}
 		
-		if (bouncy.body.velocity.x > 0 && cursors.right.isDown && bouncy.body.velocity.x < 1200){
-		bouncy.body.velocity.x *= 1.1;
+		if (doggy.body.velocity.x > 0 && cursors.right.isDown && doggy.body.velocity.x < 1200){
+		doggy.body.velocity.x *= 1.1;
+		if (doggy.body.velocity.y == 0){
+		doggy.loadTexture('logo');
 		}
-		if (bouncy.body.velocity.x > 0 && !cursors.right.isDown){
-			bouncy.body.velocity.x *= 0.95;
+		}
+		if (doggy.body.velocity.x > 0 && !cursors.right.isDown){
+			doggy.body.velocity.x *= 0.95;
+			if (doggy.body.velocity.y == 0){
+			doggy.loadTexture('logo');
+			}
 			}
 		if (jumping)
 		{
-			bouncy.body.velocity.y += 25;
-			if (bouncy.body.velocity.y == 0)
+			doggy.body.velocity.y += 25;
+			if (doggy.body.velocity.y == 0)
 			{
 				height = true;
 				jumping = false;
 			}
 		}
-		if (cursors.left.isDown && bouncy.body.velocity.x >= -50)
+		if (cursors.left.isDown && doggy.body.velocity.x >= -50)
 		{
-			bouncy.body.velocity.x =-175;
-			//player.animations.play('Dogsmall2');
+			doggy.body.velocity.x =-175;
+			doggy.loadTexture('logoL');
 		}
 		
-		if (cursors.right.isDown && bouncy.body.velocity.x <= 50)
+		if (cursors.right.isDown && doggy.body.velocity.x <= 50)
 		{
-			bouncy.body.velocity.x=175;
+			doggy.body.velocity.x=175;
+			doggy.loadTexture('logo');
 		}
 		// starting a jump
-		if (jump.isDown && height == false && bouncy.body.velocity.y == 0){
-			bouncy.body.velocity.y = -500;
+		if (jump.isDown && height == false && doggy.body.velocity.y == 0){
+			doggy.body.velocity.y = -500;
 			jumping = true;
 			jumps+= 1;
 			if (jumps%3 == 0){
@@ -130,6 +155,12 @@ window.onload = function() {
 			}
 			else{
 			woof.play('woof1');
+			}
+			if (doggy.body.velocity.x < 0){
+				doggy.loadTexture('logo2L');
+				}
+				else{
+			doggy.loadTexture('logo2');
 			}
 			}
     }
