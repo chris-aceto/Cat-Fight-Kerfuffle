@@ -83,10 +83,10 @@ window.onload = function() {
 		}
 		// checking if dog is moving left or right, and if the player wants to accellerate
 		if (bouncy.body.velocity.x < 0 && cursors.left.isDown){
-			bouncy.body.velocity.x -= 25;
+			bouncy.body.velocity.x *= 1.1;
 			}
 		if (bouncy.body.velocity.x > 0 && cursors.right.isDown){
-		bouncy.body.velocity.x += 25
+		bouncy.body.velocity.x *= 1.1;
 		}
 		if (jumping)
 		{
@@ -99,13 +99,13 @@ window.onload = function() {
 		}
 		if (cursors.left.isDown && bouncy.body.velocity.x >= 0)
 		{
-			bouncy.body.velocity.x =-25;
+			bouncy.body.velocity.x =-175;
 			//player.animations.play('Dogsmall2');
 		}
 		
 		if (cursors.right.isDown && bouncy.body.velocity.x <= 0)
 		{
-			bouncy.body.velocity.x=+25;
+			bouncy.body.velocity.x=175;
 		}
 		// starting a jump
 		if (jump.isDown && height == false && bouncy.body.velocity.y == 0){
