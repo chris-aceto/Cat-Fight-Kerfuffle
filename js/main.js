@@ -21,6 +21,7 @@ window.onload = function() {
 		game.load.image( 'logo2', 'assets/Dogsmall2.png' );
 		game.load.image( 'bg', 'assets/BG2.png' );
 		game.load.audio('woof', 'assets/woof.ogg');
+		game.load.audio('meow', 'assets/meow.ogg');
     }
     
     var bouncy;
@@ -31,6 +32,8 @@ window.onload = function() {
 	var height = false;
 	var jumping = false;
 	var woof;
+	var meow;
+	var jumps = 0;
     
     function create() {
 	game.add.tileSprite(0, 0, 1600, 400, 'bg');
@@ -52,6 +55,9 @@ window.onload = function() {
 		woof = game.add.audio('woof');
 		woof.allowMultiple = true;
         woof.addMarker('woof1', 0, 1.0);
+		meow = game.add.audio('meow');
+		meow.allowMultiple = true;
+        meow.addMarker('meow1', 0, 1.0);
 		
         // Add some text using a CSS style.
         var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
@@ -118,7 +124,13 @@ window.onload = function() {
 		if (jump.isDown && height == false && bouncy.body.velocity.y == 0){
 			bouncy.body.velocity.y = -500;
 			jumping = true;
+			jumps+= 1;
+			if (jumps%3 == 0){
+			meow.play('meow1');
+			}
+			else{
 			woof.play('woof1');
+			}
 			}
     }
 };
