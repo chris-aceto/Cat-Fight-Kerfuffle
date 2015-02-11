@@ -206,7 +206,7 @@ window.onload = function() {
 			kitty.body.x -= 50 * healthE;
 			punch.body.x -= 50 * healthE;
 			stamina -=1;
-			blocking = false;
+			//blocking = false;
 			kitty.loadTexture('kitty');
 			blocked = true;
 			}
@@ -219,7 +219,7 @@ window.onload = function() {
 			}
 		
 		
-		if (blocking == false){
+		if (cursors.down.isDown == false){
 			kitty.loadTexture('kitty');
 			if (cursors.left.isDown && punching == 0){
 				kitty.body.velocity.x  =-200;
