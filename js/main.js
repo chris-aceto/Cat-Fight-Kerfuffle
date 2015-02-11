@@ -33,6 +33,7 @@ window.onload = function() {
 		game.load.image('kittyG', 'assets/catguard.png');
     }
     
+	var text;
 	var music;
 	var punchstart = 0;
     var kitty;
@@ -61,7 +62,7 @@ window.onload = function() {
 	
 	var recede = 0;
 	var health = 5;
-	var healthE = 1;
+	var healthE = 2;
 	var stamina = 5;
 	var cooldown = 0;
     
@@ -69,7 +70,7 @@ window.onload = function() {
 		game.add.tileSprite(0, 0, 1600, 600, 'bg');
         // Create a sprite at the center of the screen using the 'kitty' image.
 		 game.world.setBounds(0, 0, 1600, 600);
-		 music = game.add.audio('fight',0.3,false);
+		 music = game.add.audio('fight',0.3,true);
 		 win = game.add.audio('victory');
 		 lose = game.add.audio('loss');
 
@@ -121,15 +122,11 @@ window.onload = function() {
 		
 		
         // Add some text using a CSS style.
-        var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-        //var text = game.add.text( 75, game.world.centerY, "Hello Dog", style );
-		var style = { font: "25px Verdana", fill: "#000000", align: "center" };
-		//var text2 = game.add.text( 1250, game.world.centerY, "Goodbye Dog", style );
-       // text.anchor.setTo( 0.5, 0.0 );
-		
-		//game.camera.bounds = null;
-		//game.camera.setSize(800, 400);
-		//game.camera.follow(kitty);
+        var style = { font: "35px Verdana", fill: "#aaaaaa", align: "center" };
+        
+		text = game.add.text( 25, 25, "Health:" + health +"\n" + "Stamina:" + stamina, style );
+		text.fixedToCamera = true;
+		text.inputEnabled = true;
 		
 		
 		cursors = game.input.keyboard.createCursorKeys();
@@ -139,10 +136,9 @@ window.onload = function() {
 	
     
     function update() {
-		game.camera.focusOnXY(kitty.body.x +400, kitty.body.y)
-		
-		
-		
+		game.camera.focusOnXY(kitty.body.x +400, kitty.body.y);
+		//text.setText ("Health:" + health +"\n" + "Stamina:" + stamina);
+		updateText();
 		// HIT DETECTION
 		if (cooldown > 0){
 			cooldown-=1;
@@ -174,6 +170,7 @@ window.onload = function() {
 			//if cat successfully hit dog
 		if (blocking == false && game.physics.arcade.collide(kitty, doggy2)){
 			health -=1;
+			//text.setText("Health:" + health +"\n" + "Stamina:" + stamina);
 			if (health ==0){
 				kitty.kill();
 				punch.kill();
@@ -206,6 +203,7 @@ window.onload = function() {
 			kitty.body.x -= 50 * healthE;
 			punch.body.x -= 50 * healthE;
 			stamina -=1;
+			//text.setText("Health:" + health +"\n" + "Stamina:" + stamina);
 			//blocking = false;
 			kitty.loadTexture('kitty');
 			blocked = true;
@@ -267,5 +265,8 @@ window.onload = function() {
 				}
 			
 		}
+		function updateText(){
+			text.setText ("Health:" + health +"\n" + "Stamina:" + stamina);
+			}
 		
 	}
