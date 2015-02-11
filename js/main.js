@@ -13,12 +13,12 @@ window.onload = function() {
     
     "use strict";
     
-    var game = new Phaser.Game( 1600, 400, Phaser.AUTO, 'game', { preload: preload, create: create, update: update } );
+    var game = new Phaser.Game( 1200, 400, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update} );
     
     function preload() {
         // Load an image and call it 'kitty'.
         //game.load.image( 'kitty', 'assets/Dogsmall.png' );
-		game.load.image( 'punch', 'assets/punch.png' );
+		game.load.image( 'punch', 'assets/punch2.png' );
 		game.load.image( 'logo2', 'assets/Dogsmall2.png' );
 		game.load.image( 'logoL', 'assets/DogsmallLeft.png' );
 		game.load.image( 'logo2L', 'assets/Dogsmall2Left.png' );
@@ -27,6 +27,7 @@ window.onload = function() {
 		game.load.audio('meow', 'assets/meow.ogg');
 		game.load.image('kitty', 'assets/cat.png');
 		game.load.image('kitty2', 'assets/cat2.png');
+		game.load.image('kittyG', 'assets/catguard.png');
     }
     
 	var punchstart = 0;
@@ -35,7 +36,7 @@ window.onload = function() {
 	var map;
 	var cursors;
 	var out;
-	var linger;
+	var punching;
 	var height = false;
 	var jumping = false;
 	var woof;
@@ -47,13 +48,24 @@ window.onload = function() {
 	var knockback = 0;
 	var kitty;
 	var currentxpos;
+	var blocking = false;
+	var canBlock = true;
+	var hit = false;
+	var blocked = false;
+	
+	var recede = 0;
+	var health = 5;
+	var healthE = 1;
+	var stamina = 5;
+	var cooldown = 0;
     
     function create() {
-	game.add.tileSprite(0, 0, 1600, 400, 'bg');
+	game.add.tileSprite(0, 0, 3000, 400, 'bg');
         // Create a sprite at the center of the screen using the 'kitty' image.
+		 game.world.setBounds(0, 0, 3000, 400);
         kitty = game.add.sprite( game.world.centerX, game.world.centerY, 'kitty' );
 		punch = game.add.sprite( game.world.centerX, game.world.centerY);
-		
+		//kitty.body.collideWorldBounds = true;
 		kitty.width = 200;
 		
 		kitty.height = 200;
@@ -64,8 +76,9 @@ window.onload = function() {
         // so it will be truly centered.
 		//kitty.animations.add('logo2', true);
 		
-        kitty.anchor.setTo( 20, -2 );
-		punch.anchor.setTo( 32, -15 );
+        kitty.anchor.setTo( 0, -2 );
+		punch.anchor.setTo( 0, -15 );
+		
 		
         // Turn on the arcade physics engine for this sprite.
         game.physics.enable( kitty, Phaser.Physics.ARCADE );
@@ -77,7 +90,7 @@ window.onload = function() {
 		doggy2.body.collideWorldBounds = true;
 		doggy2.width = 200;
 		doggy2.height = 100;
-		doggy2.anchor.setTo( 0, -2 );
+		doggy2.anchor.setTo( -2, -2 );
 		doggy2.body.immovable = false;
 		
 		// -----EXPERIMENT OVER-----
@@ -98,51 +111,46 @@ window.onload = function() {
 		
         // Add some text using a CSS style.
         var style = { font: "25px Verdana", fill: "#ffffff", align: "center" };
-        var text = game.add.text( 75, game.world.centerY, "Hello Dog", style );
+        //var text = game.add.text( 75, game.world.centerY, "Hello Dog", style );
 		var style = { font: "25px Verdana", fill: "#000000", align: "center" };
-		var text2 = game.add.text( 1250, game.world.centerY, "Goodbye Dog", style );
-        text.anchor.setTo( 0.5, 0.0 );
+		//var text2 = game.add.text( 1250, game.world.centerY, "Goodbye Dog", style );
+       // text.anchor.setTo( 0.5, 0.0 );
 		
 		//game.camera.bounds = null;
 		//game.camera.setSize(800, 400);
-		game.camera.follow(kitty);
+		//game.camera.follow(kitty);
 		
 		
 		cursors = game.input.keyboard.createCursorKeys();
 		out = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-		linger = 0;
+		punching = 0;
     }
 	
     
     function update() {
-        // Accelerate the 'kitty' sprite towards the cursor,
-        // accelerating at 250 pixels/second and moving no faster than 250 pixels/second
-        // in X or Y.
-        // This function returns the rotation angle that makes it visually match its
-        // new trajectory.
-        //kitty.rotation = game.physics.arcade.accelerateToPointer( doggy, this.game.input.activePointer, 250, 250, 250 );
-		// checking if dog has reached max height, then letting him fall
-		if (linger > 0){
-			doggy2.body.immovable = false;
-			kitty.body.velocity.x = 0;
+		game.camera.focusOnXY(kitty.body.x +400, kitty.body.y)
+		
+		
+		
+		// HIT DETECTION
+		if (cooldown > 0){
+			cooldown-=1;
+		}
+		if ( punching > 0 && game.physics.arcade.collide(punch, doggy2)){
+			healthE +=1;
+			if(healthE == 8){
+				doggy2.kill()
 			}
-		else{
-			doggy2.body.immovable = true;
-			game.physics.arcade.collide(kitty, doggy2);
-			game.physics.arcade.collide(punch, doggy2);
-			}
-		if ( linger > 0 && game.physics.arcade.collide(punch, doggy2)){
-			
 			doggy2.body.immovable = false;
+			hit = true;
 			if (woof.isPlaying == false){
 				woof.play('woof1');
 			}
 			knockback += 1;
-			}
-		
+		}
 		if (knockback > 0){
 			if (knockback != 5){
-			punch.body.velocity.x = 2000;
+			punch.body.velocity.x = 1000;
 				knockback +=1;
 				}
 			else {
@@ -150,43 +158,101 @@ window.onload = function() {
 				doggy2.body.velocity.x = 0;
 				}
 			}
-		if (cursors.left.isDown && linger == 0){
-			kitty.body.velocity.x  =-200;
-			punch.body.velocity.x  =-200;
+		
+			//if cat successfully hit dog
+		if (blocking == false && game.physics.arcade.collide(kitty, doggy2)){
+			health -=1;
+			if (health ==0){
+				kitty.kill();
+				punch.kill();
 			}
-			
-			
-		else if (cursors.right.isDown && linger == 0){
-			kitty.body.velocity.x = 400;
-			punch.body.velocity.x = 400;
+			kitty.body.x -=120 * healthE;
+			punch.body.x -=120 * healthE;
+		}
+		
+		if (hit){
+				doggy2.body.velocity.x = 2000;
+				recede +=1;
+			if (recede == 15){
+				hit = false;
+				recede = 0;
 			}
-			else{
+		}
+		else{
+			doggy2.body.velocity.x = -150 * healthE;
+			}
+		// BLOCKING
+		if (cursors.down.isDown && punching == 0 && stamina > 0){
+			kitty.loadTexture('kittyG');
+			blocking = true;
 			kitty.body.velocity.x = 0;
-			punch.body.velocity.x = 0;
+			punch.body.x = kitty.body.x;
+			}
+			// block hit
+		if ( blocking && game.physics.arcade.collide(punch, doggy2)){
+			kitty.body.x -= 50 * healthE;
+			punch.body.x -= 50 * healthE;
+			stamina -=1;
+			blocking = false;
+			kitty.loadTexture('kitty');
+			blocked = true;
+			}
+		if (kitty.body.velocity.x != 0 ) {
+			blocking = false;
+			}
+		if (punching > 0){
+			doggy2.body.immovable = false;
+			kitty.body.velocity.x = 0;
+			}
+		
+		
+		if (blocking == false){
+			kitty.loadTexture('kitty');
+			if (cursors.left.isDown && punching == 0){
+				kitty.body.velocity.x  =-200;
+				punch.body.velocity.x  =-200;
+				}
+				
+				
+			else if (cursors.right.isDown && punching == 0){
+				kitty.body.velocity.x = 800;
+				punch.body.velocity.x = 800;
+				}
+				else{
+				kitty.body.velocity.x = 0;
+				punch.body.velocity.x = 0;
+				}
 			}
 			
-		if (out.isDown && linger == 0){
-			punchstart = punch.body.x;
-			punch.body.velocity.x += 2000;
-			linger +=1;
-			if (meow.isPlaying == false){
-				meow.play('meow1');
+			// PUNCHING
+			if (out.isDown && punching ==0 && cooldown == 0){
+				blocking = false;
+				punch.body.velocity.x += 500;
+				punching +=1;
+				if (meow.isPlaying == false){
+					meow.play('meow1');
 				}
-		}
-		if (linger>0){
-			if (linger == 20){
-				linger = 0;
-				punch.body.x = punchstart;
-				kitty.width = 200;
-				kitty.loadTexture('kitty');
-				}
-			else{
-				linger +=1;
-				//currentxpos = kitty.body.x;
-				//kitty.body.width = 250;
-				kitty.loadTexture('kitty2');
-				//kitty.body.x = currentxpos;
-				}
+				
 			}
+		
+			if (punching>0){
+			kitty.loadTexture('kitty2');
+			punching += 1;
+				if (punching == 25){
+					punching = 0;
+					punch.body.x = kitty.body.x;
+					kitty.loadTexture('kitty');
+					cooldown = 20;
+					}
+				else{
+					//punching +=1;
+					//currentxpos = kitty.body.x;
+					//kitty.body.width = 250;
+					//kitty.loadTexture('kitty2');
+					//kitty.body.x = currentxpos;
+					}
+				}
+			
 		}
+		
 	}
