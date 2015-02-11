@@ -19,6 +19,7 @@ window.onload = function() {
         // Load an image and call it 'kitty'.
         //game.load.image( 'kitty', 'assets/Dogsmall.png' );
 		game.load.image( 'punch', 'assets/punch2.png' );
+		game.load.spritesheet('cats', 'assets/catsheet2.png', 362, 400);
 		game.load.image( 'logo2', 'assets/Dogsmall2.png' );
 		game.load.image( 'logoL', 'assets/DogsmallLeft.png' );
 		game.load.image( 'logo2L', 'assets/Dogsmall2Left.png' );
@@ -75,7 +76,7 @@ window.onload = function() {
 		 lose = game.add.audio('loss');
 
 		music.play();
-        kitty = game.add.sprite( game.world.centerX, game.world.centerY, 'kitty' );
+        kitty = game.add.sprite( game.world.centerX, game.world.centerY, 'cats' );
 		punch = game.add.sprite( game.world.centerX, game.world.centerY);
 		//kitty.body.collideWorldBounds = true;
 		kitty.width = 300;
@@ -84,6 +85,11 @@ window.onload = function() {
 		punch.width = 300;
 		
 		punch.height = 300;
+		kitty.animations.add('walk', [0,1,2],6,true);
+		kitty.animations.add('guard', [3],10,true);
+		kitty.animations.add('punch', [2,1,4],7,true);
+		kitty.animations.add('stand', [0],1,true);
+		kitty.animations.play('walk');
 		//kitty.body.width = 200;
         // so it will be truly centered.
 		//kitty.animations.add('logo2', true);
@@ -136,6 +142,20 @@ window.onload = function() {
 	
     
     function update() {
+		if (punching > 0){
+			kitty.body.x += 5;
+			punch.body.x += 5;
+		}
+		else if (cooldown > 0){
+			kitty.body.x -= 5;
+			punch.body.x -= 5;
+		}
+		if (punching == 0 && cursors.down.isDown == false && kitty.body.velocity.x !=0){
+			kitty.animations.play('walk');
+		}
+		else if(punching == 0 && cursors.down.isDown == false && kitty.body.velocity.x ==0){
+			kitty.animations.play('stand');
+			}
 		game.camera.focusOnXY(kitty.body.x +400, kitty.body.y);
 		//text.setText ("Health:" + health +"\n" + "Stamina:" + stamina);
 		updateText();
@@ -170,7 +190,7 @@ window.onload = function() {
 			//if cat successfully hit dog
 		if (blocking == false && game.physics.arcade.collide(kitty, doggy2)){
 			health -=1;
-			if (health ==0){
+			if (health <1){
 				kitty.kill();
 				punch.kill();
 				lose.play();
@@ -192,7 +212,7 @@ window.onload = function() {
 			}
 		// BLOCKING
 		if (cursors.down.isDown && punching == 0 && stamina > 0){
-			kitty.loadTexture('kittyG');
+			kitty.animations.play('guard');
 			blocking = true;
 			kitty.body.velocity.x = 0;
 			punch.body.x = kitty.body.x;
@@ -201,8 +221,11 @@ window.onload = function() {
 		if ( blocking && game.physics.arcade.collide(punch, doggy2)){
 			kitty.body.x -= 50 * healthE;
 			punch.body.x -= 50 * healthE;
+			if (stamina < 1){
+				health -= 1;
+				}
 			stamina -=1;
-			kitty.loadTexture('kitty');
+			//kitty.loadTexture('kitty');
 			blocked = true;
 			}
 		if (kitty.body.velocity.x != 0 ) {
@@ -215,7 +238,8 @@ window.onload = function() {
 		
 		
 		if (cursors.down.isDown == false){
-			kitty.loadTexture('kitty');
+			//kitty.animations.play('cats');
+			//kitty.loadTexture('kitty');
 			if (cursors.left.isDown && punching == 0){
 				kitty.body.velocity.x  =-200;
 				punch.body.velocity.x  =-200;
@@ -244,13 +268,14 @@ window.onload = function() {
 			}
 		
 			if (punching>0){
-			kitty.loadTexture('kitty2');
+			//kitty.loadTexture('kitty2',false);
+			kitty.animations.play('punch',false);
 			punching += 1;
 				if (punching == 25){
 					punching = 0;
 					punch.body.velocity.x = 0;
 					punch.body.x = kitty.body.x;
-					kitty.loadTexture('kitty');
+					//kitty.loadTexture('kitty');
 					cooldown = 20;
 					}
 				else{
