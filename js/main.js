@@ -13,7 +13,7 @@ window.onload = function() {
     
     "use strict";
     
-    var game = new Phaser.Game( 1200, 400, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update} );
+    var game = new Phaser.Game( 1200, 600, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update} );
     
     function preload() {
         // Load an image and call it 'kitty'.
@@ -22,14 +22,18 @@ window.onload = function() {
 		game.load.image( 'logo2', 'assets/Dogsmall2.png' );
 		game.load.image( 'logoL', 'assets/DogsmallLeft.png' );
 		game.load.image( 'logo2L', 'assets/Dogsmall2Left.png' );
-		game.load.image( 'bg', 'assets/BG2.png' );
+		game.load.image( 'bg', 'assets/cfkbg.png' );
 		game.load.audio('woof', 'assets/woof.ogg');
+		game.load.audio('fight', 'assets/Super Mario World Ending.ogg');
+		game.load.audio('victory', 'assets/win.ogg');
+		game.load.audio('loss', 'assets/lose.ogg');
 		game.load.audio('meow', 'assets/meow.ogg');
 		game.load.image('kitty', 'assets/cat.png');
 		game.load.image('kitty2', 'assets/cat2.png');
 		game.load.image('kittyG', 'assets/catguard.png');
     }
     
+	var music;
 	var punchstart = 0;
     var kitty;
 	var floor;
@@ -52,6 +56,8 @@ window.onload = function() {
 	var canBlock = true;
 	var hit = false;
 	var blocked = false;
+	var win;
+	var lose;
 	
 	var recede = 0;
 	var health = 5;
@@ -60,24 +66,29 @@ window.onload = function() {
 	var cooldown = 0;
     
     function create() {
-	game.add.tileSprite(0, 0, 3000, 400, 'bg');
+		game.add.tileSprite(0, 0, 1600, 600, 'bg');
         // Create a sprite at the center of the screen using the 'kitty' image.
-		 game.world.setBounds(0, 0, 3000, 400);
+		 game.world.setBounds(0, 0, 1600, 600);
+		 music = game.add.audio('fight',0.3,false);
+		 win = game.add.audio('victory');
+		 lose = game.add.audio('loss');
+
+		music.play();
         kitty = game.add.sprite( game.world.centerX, game.world.centerY, 'kitty' );
 		punch = game.add.sprite( game.world.centerX, game.world.centerY);
 		//kitty.body.collideWorldBounds = true;
-		kitty.width = 200;
+		kitty.width = 300;
 		
-		kitty.height = 200;
-		punch.width = 200;
+		kitty.height = 300;
+		punch.width = 300;
 		
-		punch.height = 200;
+		punch.height = 300;
 		//kitty.body.width = 200;
         // so it will be truly centered.
 		//kitty.animations.add('logo2', true);
 		
-        kitty.anchor.setTo( 0, -2 );
-		punch.anchor.setTo( 0, -15 );
+        kitty.anchor.setTo( 20, -6 );
+		punch.anchor.setTo( 20, -25 );
 		
 		
         // Turn on the arcade physics engine for this sprite.
@@ -88,8 +99,8 @@ window.onload = function() {
 		doggy2 = game.add.sprite( game.world.centerX, game.world.centerY, 'logoL' );
 		game.physics.enable( doggy2, Phaser.Physics.ARCADE );
 		doggy2.body.collideWorldBounds = true;
-		doggy2.width = 200;
-		doggy2.height = 100;
+		doggy2.width = 400;
+		doggy2.height = 200;
 		doggy2.anchor.setTo( -2, -2 );
 		doggy2.body.immovable = false;
 		
@@ -139,7 +150,8 @@ window.onload = function() {
 		if ( punching > 0 && game.physics.arcade.collide(punch, doggy2)){
 			healthE +=1;
 			if(healthE == 8){
-				doggy2.kill()
+				doggy2.kill();
+				win.play();
 			}
 			doggy2.body.immovable = false;
 			hit = true;
@@ -165,6 +177,7 @@ window.onload = function() {
 			if (health ==0){
 				kitty.kill();
 				punch.kill();
+				lose.play();
 			}
 			kitty.body.x -=120 * healthE;
 			punch.body.x -=120 * healthE;
