@@ -158,7 +158,7 @@ window.onload = function() {
 		}
 		if (knockback > 0){
 			if (knockback != 5){
-			punch.body.velocity.x = 1000;
+			//punch.body.velocity.x = 1000;
 				knockback +=1;
 				}
 			else {
@@ -170,7 +170,6 @@ window.onload = function() {
 			//if cat successfully hit dog
 		if (blocking == false && game.physics.arcade.collide(kitty, doggy2)){
 			health -=1;
-			//text.setText("Health:" + health +"\n" + "Stamina:" + stamina);
 			if (health ==0){
 				kitty.kill();
 				punch.kill();
@@ -203,8 +202,6 @@ window.onload = function() {
 			kitty.body.x -= 50 * healthE;
 			punch.body.x -= 50 * healthE;
 			stamina -=1;
-			//text.setText("Health:" + health +"\n" + "Stamina:" + stamina);
-			//blocking = false;
 			kitty.loadTexture('kitty');
 			blocked = true;
 			}
@@ -251,6 +248,7 @@ window.onload = function() {
 			punching += 1;
 				if (punching == 25){
 					punching = 0;
+					punch.body.velocity.x = 0;
 					punch.body.x = kitty.body.x;
 					kitty.loadTexture('kitty');
 					cooldown = 20;
