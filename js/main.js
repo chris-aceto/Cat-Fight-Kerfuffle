@@ -136,6 +136,9 @@ window.onload = function() {
 		text = game.add.text( 25, 25, "Health:" + health +"\n" + "Stamina:" + stamina, style );
 		text.fixedToCamera = true;
 		text.inputEnabled = true;
+		var controlsText = game.add.text( 900, 25, "Down: block \n Space: Punch", style );
+		text.fixedToCamera = true;
+		text.inputEnabled = true;
 		
 		
 		cursors = game.input.keyboard.createCursorKeys();
