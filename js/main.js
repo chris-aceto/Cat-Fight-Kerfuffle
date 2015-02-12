@@ -32,6 +32,7 @@ window.onload = function() {
 		game.load.image('kitty', 'assets/cat.png');
 		game.load.image('kitty2', 'assets/cat2.png');
 		game.load.image('kittyG', 'assets/catguard.png');
+		game.load.spritesheet('dogs', 'assets/DogsmallLeftsheet.png', 82, 68);
     }
     
 	var text;
@@ -60,6 +61,8 @@ window.onload = function() {
 	var blocked = false;
 	var win;
 	var lose;
+	var winfight = false;
+	var losefight= false;
 	
 	var recede = 0;
 	var health = 5;
@@ -103,14 +106,14 @@ window.onload = function() {
 		game.physics.enable( punch, Phaser.Physics.ARCADE );
 		
 		// -----EXPERIMENT-----
-		doggy2 = game.add.sprite( game.world.centerX, game.world.centerY, 'logoL' );
+		doggy2 = game.add.sprite( game.world.centerX, game.world.centerY, 'dogs' );
 		game.physics.enable( doggy2, Phaser.Physics.ARCADE );
 		doggy2.body.collideWorldBounds = true;
 		doggy2.width = 400;
 		doggy2.height = 200;
 		doggy2.anchor.setTo( -2, -2 );
 		doggy2.body.immovable = false;
-		
+		doggy2.animations.add('walkd', [0,1, 2], 4,true);
 		// -----EXPERIMENT OVER-----
 		
 		
@@ -138,10 +141,12 @@ window.onload = function() {
 		cursors = game.input.keyboard.createCursorKeys();
 		out = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		punching = 0;
+		doggy2.animations.play('walkd');
     }
 	
     
     function update() {
+		
 		if (punching > 0){
 			kitty.body.x += 5;
 			punch.body.x += 5;
@@ -168,6 +173,7 @@ window.onload = function() {
 			if(healthE == 8){
 				doggy2.kill();
 				win.play();
+				winfight = true;
 			}
 			doggy2.body.immovable = false;
 			hit = true;
@@ -194,6 +200,7 @@ window.onload = function() {
 				kitty.kill();
 				punch.kill();
 				lose.play();
+				losefight = true;
 			}
 			kitty.body.x -=120 * healthE;
 			punch.body.x -=120 * healthE;
@@ -290,6 +297,12 @@ window.onload = function() {
 		}
 		function updateText(){
 			text.setText ("Health:" + health +"\n" + "Stamina:" + stamina);
+			if (winfight || losefight){
+				text.setText("KO");
+				text.height += 25;
+				text.width += 25;
+				}
+			
 			}
 		
 	}
